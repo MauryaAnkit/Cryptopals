@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/hex"
+	"cryptopals/utils"
 	"fmt"
 )
 
@@ -10,35 +10,28 @@ func main() {
 	input2 := "686974207468652062756c6c277320657965"
 	expectedOutput := "746865206b696420646f6e277420706c6179"
 
-	a, err := hex.DecodeString(input1)
+	a, err := utils.HexToBytes(input1)
 
 	if err != nil {
 		panic(err)
 	}
 
-	b, err := hex.DecodeString(input2)
+	b, err := utils.HexToBytes(input2)
 	if err != nil {
 		panic(err)
 
 	}
 
-	result := fixedXOR(a, b)
-	if hex.EncodeToString(result) == expectedOutput {
+	byteResult, err := utils.FixedXOR(a, b)
+	if err != nil {
+		panic(err)
+
+	}
+
+	result := utils.BytesToHex(byteResult)
+	// result := utils.BytesToHex(fixedXOR(a, b))
+	if result == expectedOutput {
 		fmt.Println("resultMatched")
 	}
-	fmt.Print(hex.EncodeToString(result))
-}
-
-func fixedXOR(a, b []byte) []byte {
-
-	if len(a) != len(b) {
-		panic("buffers must be equal length")
-	}
-
-	result := make([]byte, len(a))
-
-	for i := range a {
-		result[i] = a[i] ^ b[i]
-	}
-	return result
+	fmt.Print(result)
 }
